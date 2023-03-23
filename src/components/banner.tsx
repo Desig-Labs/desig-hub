@@ -1,6 +1,6 @@
 import { Col, Row, Space, Typography, Image } from "antd";
 
-import banner from "static/images/banner_1.png";
+import banner from "static/images/banner.png";
 
 const Banner = () => {
   return (
