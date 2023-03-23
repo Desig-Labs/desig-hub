@@ -30,11 +30,12 @@ const SignInSocials = () => {
           <Avatar src={user.user_metadata.picture}></Avatar>
           <Typography.Text>{user.email}</Typography.Text>
           <Button onClick={() => onBackupKey()}>Backup Key</Button>
+          <Button onClick={() => supabase.auth.signOut()}>Logout</Button>
         </Space>
       )}
 
       <Modal open={open} footer={null} title="Login Desig" onCancel={() => setOpen(false)}>
-        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={["google"]}>
+        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={["google", "discord", "facebook", "twitter"]}>
           hello
         </Auth>
       </Modal>
