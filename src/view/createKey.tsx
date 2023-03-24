@@ -1,4 +1,4 @@
-import { Button, Card, Col, Image, Row, Space, Typography } from 'antd'
+import { Card, Col, Row, Typography } from 'antd'
 import DeviceStorage from 'components/auth/deviceStorage'
 import RecoveryPassword from 'components/auth/recoveryPassword'
 import SignInSocials from 'components/auth/signInSocials'
