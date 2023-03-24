@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@noble/ed25519": "^1.7.3",
     "@sentre/antd-ionicon": "^2.0.2",
     "@supabase/auth-ui-react": "^0.3.5",
     "@supabase/auth-ui-shared": "^0.1.3",
