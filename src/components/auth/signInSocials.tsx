@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import * as ed from '@noble/ed25519'
 
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
@@ -9,18 +8,20 @@ import useProfile from 'hooks/useProfile'
 import { supabase } from 'configs'
 
 import socials from 'static/images/socials.svg'
+import useUserKey from 'hooks/useUserKey'
 
 const SignInSocials = () => {
   const [open, setOpen] = useState(false)
   const { user } = Auth.useUser()
-  const { profile, updateProfile } = useProfile()
+  const { priKey } = useUserKey()
+  const { updateProfile } = useProfile()
 
-  const onBackupKey = async () => {
-    if (!user) return
-    const privateKey = ed.utils.randomPrivateKey()
+  const onBackupShare = async () => {
+    if (!user || !priKey) return
+    const socialShare = priKey.substring(0, 10)
     await updateProfile(
-      { username: 'ola' },
-      Buffer.from(privateKey).toString('hex'),
+      { username: 'new_user_name', share_key: socialShare },
+      priKey,
     )
   }
 
@@ -40,8 +41,7 @@ const SignInSocials = () => {
             <Space>
               <Avatar src={user.user_metadata.picture}></Avatar>
               <Typography.Text>{user.email}</Typography.Text>
-              <Button onClick={() => onBackupKey()}>Backup Key</Button>
-              <Button onClick={() => supabase.auth.signOut()}>Logout</Button>
+              <Button onClick={() => onBackupShare()}>Backup Share</Button>
             </Space>
           )}
 

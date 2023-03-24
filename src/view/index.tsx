@@ -3,12 +3,12 @@ import { Col, Layout, Row, Divider } from 'antd'
 import { Content, Header } from 'antd/lib/layout/layout'
 import Banner from 'components/banner'
 import Logo from 'components/logo'
-import ReconstructKeyTab from 'components/tabCard/reconstructKeyTab'
-import CreateKeyTab from 'components/tabCard/createKeyTab'
+import ReconstructKeyTab from 'components/banner/reconstructKeyTab'
+import CreateKeyTab from 'components/banner/createKeyTab'
 import CreateKey from './createKey'
 
 import './index.less'
-import Profile from 'components/profile'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 export type ProcessConfig = {
   time: number
@@ -41,7 +41,11 @@ function View() {
         <Content>
           <Row align="middle" justify="center">
             <Col style={{ maxWidth: 650, width: '100%' }}>
-              <CreateKey />
+              <Routes>
+                <Route path="create-key" element={<CreateKey />} />
+                <Route path="reconstruct-key" element={<ReconstructKeyTab />} />
+                <Route path="*" element={<Navigate to={'create-key'} />} />
+              </Routes>
             </Col>
           </Row>
         </Content>
