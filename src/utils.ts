@@ -1,5 +1,20 @@
 import * as ed from '@noble/ed25519'
 
+export type RequestBodyAuth = {
+  data: string
+  signature: number[]
+  publicKey: number[]
+  authentication: {
+    data: string
+    // {
+    //   func_name: string
+    //   time: string
+    //   signature: number[]
+    // }
+    auth_signature: number[]
+  }
+}
+
 function toUTF8Array(str: any): any {
   let utf8 = []
   for (let i = 0; i < str.length; i++) {
@@ -51,5 +66,26 @@ export const signMessage = async (data: Object, privateKey: string) => {
     data: dataStr,
     signature: Array.from(signature),
     publicKey: Array.from(publicKey),
+  }
+}
+
+export const addSignedAuthority = async (
+  func_name: string,
+  signedData: Awaited<ReturnType<typeof signMessage>>,
+  privateKey: string,
+): Promise<RequestBodyAuth> => {
+  const time = new Date().toISOString()
+  const authData = {
+    time,
+    func_name,
+    signature: signedData.signature,
+  }
+  const signedAuth = await signMessage(authData, privateKey)
+  return {
+    ...signedData,
+    authentication: {
+      data: signedAuth.data,
+      auth_signature: signedAuth.signature,
+    },
   }
 }

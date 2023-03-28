@@ -1,9 +1,11 @@
-import { Col, Layout, Row, Divider, Space } from 'antd'
+import { Col, Layout, Row, Divider } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import PageHeader from 'components/pageHeader'
-import Profile from 'view/profile'
+import ProfileManagement from 'view/profileManagement'
 import Banner from 'components/banner'
 import { CreateProfile } from './createProfile'
+import { Search } from './search'
+import { SharedKey } from './sharedKey'
 
 export type ProcessConfig = {
   time: number
@@ -23,12 +25,27 @@ function View() {
           </Col>
         </Row>
         <Content>
-          <Row align="middle" justify="center">
-            <Col>
-              <Space direction="vertical">
-                <CreateProfile />
-                <Profile />
-              </Space>
+          <Row justify="center" gutter={[24, 24]}>
+            <Col span={24}>
+              <Row justify="center" gutter={[24, 24]}>
+                <Col span={8} style={{ height: 430 }}>
+                  <CreateProfile />
+                </Col>
+                <Col span={8} style={{ height: 430 }}>
+                  <ProfileManagement />
+                </Col>
+              </Row>
+            </Col>
+
+            <Col span={24}>
+              <Row justify="center" gutter={[24, 24]}>
+                <Col span={8} style={{ height: 430 }}>
+                  <SharedKey />
+                </Col>
+                <Col span={8} style={{ height: 430 }}>
+                  <Search />
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Content>

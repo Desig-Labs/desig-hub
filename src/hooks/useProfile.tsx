@@ -38,9 +38,8 @@ export const useCreateProfile = () => {
   const invoke = useInvoke()
 
   const createProfile = useCallback(async () => {
-    if (!user) return
     return invoke.call('create-profile', {
-      username: user.id,
+      username: user?.id,
       public_key: pubKey,
     })
   }, [invoke, pubKey, user])
@@ -49,17 +48,15 @@ export const useCreateProfile = () => {
 }
 
 export const useUpdateProfile = () => {
-  const { user } = Auth.useUser()
   const invoke = useInvoke()
 
   const updateProfile = useCallback(
     async (params: { username: string }) => {
-      if (!user) return
       return invoke.call('update-profile', {
         username: params.username,
       })
     },
-    [invoke, user],
+    [invoke],
   )
   return { updateProfile, loading: invoke.loading }
 }

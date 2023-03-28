@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import * as ed from '@noble/ed25519'
 
 import { Auth } from '@supabase/auth-ui-react'
-import { Button, Form, Input, PageHeader } from 'antd'
+import { Button, Col, Form, Input, PageHeader, Row } from 'antd'
 import { useCreateProfile } from 'hooks/useProfile'
 import { useUserKey } from 'hooks/useUserKey'
 
@@ -10,7 +10,8 @@ export const CreateProfile = () => {
   const { user } = Auth.useUser()
   const [form] = Form.useForm()
   const privKey = Form.useWatch('privKey', form)
-  const { set: setUserKey } = useUserKey()
+  const pubKey = Form.useWatch('pubKey', form)
+  const { set: setUserKey, get } = useUserKey()
 
   const { createProfile, loading } = useCreateProfile()
 
@@ -40,9 +41,18 @@ export const CreateProfile = () => {
     form.setFieldValue('privKey', newPrivKey)
   }
 
-  if (!user) return null
+  const onLoadPrivKey = async () => {
+    const privateKey = await get(pubKey)
+    form.setFieldValue('privKey', privateKey)
+  }
+
   return (
-    <PageHeader ghost={false} title="Create Profile" subTitle={user.email}>
+    <PageHeader
+      ghost={false}
+      title="Create Profile"
+      subTitle={user?.email || '--'}
+      style={{ height: '100%' }}
+    >
       <Form
         form={form}
         initialValues={{ remember: true }}
@@ -66,13 +76,27 @@ export const CreateProfile = () => {
         </Form.Item>
 
         <Form.Item label="Public Key" name="pubKey">
-          <Input disabled size="large" />
+          <Input size="large" />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loading}>
-            Submit
-          </Button>
+          <Row gutter={[24, 24]}>
+            <Col span={12}>
+              <Button type="primary" htmlType="submit" block loading={loading}>
+                Submit
+              </Button>
+            </Col>
+            <Col span={12}>
+              <Button
+                type="ghost"
+                block
+                loading={loading}
+                onClick={onLoadPrivKey}
+              >
+                Load from local storage
+              </Button>
+            </Col>
+          </Row>
         </Form.Item>
       </Form>
     </PageHeader>

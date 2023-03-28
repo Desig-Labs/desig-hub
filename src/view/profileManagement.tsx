@@ -1,24 +1,13 @@
 import { Button, Form, Input, PageHeader } from 'antd'
 
 import { useProfile, useUpdateProfile } from 'hooks/useProfile'
-import { useUserKey } from 'hooks/useUserKey'
 import { useEffect } from 'react'
 
-const Profile = () => {
+const ProfileManagement = () => {
   const profile = useProfile()
   const [form] = Form.useForm()
-  const { updateProfile } = useUpdateProfile()
-  const { priKey } = useUserKey()
+  const { loading, updateProfile } = useUpdateProfile()
 
-  const handleUpdateProfile = (values: any) => {
-    try {
-      if (!priKey) throw new Error('Invalid priKey')
-      updateProfile({ privateKey: priKey, ...values })
-      console.log('values', values)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
   useEffect(() => {
     if (!profile) return
     form.setFieldValue('uid', profile.uid)
@@ -26,18 +15,18 @@ const Profile = () => {
     form.setFieldValue('username', profile.username)
   }, [form, profile])
 
-  if (!profile) return null
   return (
     <PageHeader
       ghost={false}
-      title="Profile management"
-      subTitle={profile.username}
+      title="Profile Management"
+      subTitle={profile?.username || '--'}
+      style={{ height: '100%' }}
     >
       <Form
         form={form}
         initialValues={{ remember: true }}
         layout="vertical"
-        onFinish={handleUpdateProfile}
+        onFinish={updateProfile}
       >
         <Form.Item label="UserID" name="uid">
           <Input size="large" />
@@ -50,7 +39,7 @@ const Profile = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block loading={loading}>
             Submit
           </Button>
         </Form.Item>
@@ -59,4 +48,4 @@ const Profile = () => {
   )
 }
 
-export default Profile
+export default ProfileManagement

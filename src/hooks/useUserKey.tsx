@@ -20,7 +20,8 @@ export const useUserKey = () => {
   const get = useCallback(
     async (pubKey: string) => {
       const priKeyData = localStorage.getItem(`${STORAGE_ID}:${pubKey}`)
-      return setUserKey({ pubKey, priKey: priKeyData })
+      setUserKey({ pubKey, priKey: priKeyData })
+      return priKeyData
     },
     [setUserKey],
   )
