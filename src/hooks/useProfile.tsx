@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-import * as ed from '@noble/ed25519'
-
 import { Auth } from '@supabase/auth-ui-react'
+
 import { supabase } from 'configs'
-import { convertStringToU8Array } from 'utils'
+import { useInvoke } from './useInvoke'
+import { useUserKey } from './useUserKey'
 
 export type Profile = {
-  id: string
-  share_key: string
+  uid: string
   public_key: string
   username: string
 }
 
-const useProfile = () => {
+export const useProfile = () => {
   const { user } = Auth.useUser()
   const [profile, setProfile] = useState<Profile | null>()
 
@@ -22,7 +21,7 @@ const useProfile = () => {
     const { data } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('uid', user.id)
     return setProfile((data?.[0] as any) || null)
   }, [user])
 
@@ -30,33 +29,37 @@ const useProfile = () => {
     fetchProfile()
   }, [fetchProfile])
 
-  const updateProfile = useCallback(
-    async (profile: Partial<Profile>, privateKey: string) => {
-      if (!user) throw new Error('Login fist')
-      const publicKey = await ed.getPublicKey(privateKey)
-      // Build message and signature
-      const data = JSON.stringify({
-        ...profile,
-        id: user.id,
-      })
-      const message = convertStringToU8Array(data)
-      const signature = await ed.sign(message, privateKey)
-      // Invoke function update profile
-      const res = await supabase.functions.invoke('update-profile', {
-        body: {
-          data,
-          signature: Buffer.from(signature).toString('hex'),
-          publicKey: Buffer.from(publicKey).toString('hex'),
-        },
-      })
-      // Refetch profile
-      await fetchProfile()
-      return res
-    },
-    [fetchProfile, user],
-  )
-
-  return { profile, updateProfile }
+  return profile
 }
 
-export default useProfile
+export const useCreateProfile = () => {
+  const { user } = Auth.useUser()
+  const { pubKey } = useUserKey()
+  const invoke = useInvoke()
+
+  const createProfile = useCallback(async () => {
+    if (!user) return
+    return invoke.call('create-profile', {
+      username: user.id,
+      public_key: pubKey,
+    })
+  }, [invoke, pubKey, user])
+
+  return { createProfile, loading: invoke.loading }
+}
+
+export const useUpdateProfile = () => {
+  const { user } = Auth.useUser()
+  const invoke = useInvoke()
+
+  const updateProfile = useCallback(
+    async (params: { username: string }) => {
+      if (!user) return
+      return invoke.call('update-profile', {
+        username: params.username,
+      })
+    },
+    [invoke, user],
+  )
+  return { updateProfile, loading: invoke.loading }
+}

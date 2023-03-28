@@ -1,8 +1,5 @@
-import { useCallback, useEffect } from 'react'
-import * as ed from '@noble/ed25519'
+import { useCallback } from 'react'
 import { create } from 'zustand'
-
-import useProfile from './useProfile'
 
 const STORAGE_ID = 'DESIG:USER_KEY'
 
@@ -17,36 +14,24 @@ const useUserKeyStore = create<UserKeyState>((set) => ({
   setUserKey: (payload) => set((state) => ({ ...state, ...payload })),
 }))
 
-const useUserKey = () => {
+export const useUserKey = () => {
   const { priKey, pubKey, setUserKey } = useUserKeyStore()
-  const { profile } = useProfile()
 
-  useEffect(() => {
-    setUserKey({ pubKey: profile?.public_key })
-  }, [profile?.public_key, setUserKey])
-
-  const loadPriFromPub = useCallback(async () => {
-    if (!pubKey) return setUserKey({ priKey: null })
-    const priKeyData = localStorage.getItem(`${STORAGE_ID}:${pubKey}`)
-    return setUserKey({ priKey: priKeyData })
-  }, [pubKey, setUserKey])
-  useEffect(() => {
-    loadPriFromPub()
-  }, [loadPriFromPub])
-
-  const backupPrivateKey = useCallback(
-    async (privateKey: Uint8Array) => {
-      const publicKey = await ed.getPublicKey(privateKey)
-      const pubKeyData = Buffer.from(publicKey).toString('hex')
-      const priKeyData = Buffer.from(privateKey).toString('hex')
-      localStorage.setItem(`${STORAGE_ID}:${pubKeyData}`, priKeyData)
-      setUserKey({ priKey: priKeyData, pubKey: pubKeyData })
-      return { priKey: priKeyData, pubKey: pubKeyData }
+  const get = useCallback(
+    async (pubKey: string) => {
+      const priKeyData = localStorage.getItem(`${STORAGE_ID}:${pubKey}`)
+      return setUserKey({ pubKey, priKey: priKeyData })
     },
     [setUserKey],
   )
 
-  return { priKey, pubKey, loadPriFromPub, backupPrivateKey }
-}
+  const set = useCallback(
+    async ({ pubKey, privKey }: { pubKey: string; privKey: string }) => {
+      localStorage.setItem(`${STORAGE_ID}:${pubKey}`, privKey)
+      setUserKey({ pubKey: pubKey, priKey: privKey })
+    },
+    [setUserKey],
+  )
 
-export default useUserKey
+  return { priKey, pubKey, set, get }
+}

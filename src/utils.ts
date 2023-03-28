@@ -1,3 +1,5 @@
+import * as ed from '@noble/ed25519'
+
 function toUTF8Array(str: any): any {
   let utf8 = []
   for (let i = 0; i < str.length; i++) {
@@ -37,4 +39,17 @@ function toUTF8Array(str: any): any {
 
 export function convertStringToU8Array(data: string) {
   return Uint8Array.from(toUTF8Array(data))
+}
+
+export const signMessage = async (data: Object, privateKey: string) => {
+  const dataStr = JSON.stringify(data)
+  const bufData = convertStringToU8Array(dataStr)
+  const bufPriv = Buffer.from(privateKey, 'hex')
+  const signature = await ed.sign(bufData, bufPriv)
+  const publicKey = await ed.getPublicKey(Buffer.from(privateKey, 'hex'))
+  return {
+    data: dataStr,
+    signature: Array.from(signature),
+    publicKey: Array.from(publicKey),
+  }
 }

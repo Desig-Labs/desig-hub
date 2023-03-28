@@ -1,27 +1,30 @@
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { Auth } from "@supabase/auth-ui-react";
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { Auth } from '@supabase/auth-ui-react'
 
-import View from "view";
+import View from 'view'
 
-import { supabase } from "configs";
-import reportWebVitals from "reportWebVitals";
-import "static/styles/index.less";
+import { supabase } from 'configs'
+import reportWebVitals from 'reportWebVitals'
+import 'static/styles/index.less'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
-createRoot(document.getElementById("root") as HTMLElement).render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
       <Auth.UserContextProvider supabaseClient={supabase}>
         <View />
+        <ToastContainer />
       </Auth.UserContextProvider>
     </QueryClientProvider>
-  </BrowserRouter>
-);
+  </BrowserRouter>,
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals()
