@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Button, Form, Input, PageHeader, Tag } from 'antd'
+import { Button, Form, Input, Tag } from 'antd'
 import { supabase } from 'configs'
 import { toast } from 'react-toastify'
 
@@ -27,31 +27,30 @@ export const Search = () => {
   }
 
   return (
-    <PageHeader ghost={false} title="Search Handle">
-      <Form
-        form={form}
-        initialValues={{ remember: true }}
-        layout="vertical"
-        onFinish={onSearch}
+    <Form
+      title="Search Handle"
+      form={form}
+      initialValues={{ remember: true }}
+      layout="vertical"
+      onFinish={onSearch}
+    >
+      <Form.Item
+        label="Search"
+        name="search"
+        rules={[{ required: true, message: 'Please input your search!' }]}
       >
-        <Form.Item
-          label="Search"
-          name="search"
-          rules={[{ required: true, message: 'Please input your search!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loading}>
-            Search
-          </Button>
-        </Form.Item>
-      </Form>
+        <Input />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit" block loading={loading}>
+          Search
+        </Button>
+      </Form.Item>
       {users.map((user) => (
         <Tag color="purple" key={user.username}>
           {user.username}
         </Tag>
       ))}
-    </PageHeader>
+    </Form>
   )
 }

@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, PageHeader, Row } from 'antd'
+import { Button, Col, Form, Input, Row } from 'antd'
 import { useSharedKey } from 'hooks/useSharedKey'
 
 export const SharedKey = () => {
@@ -12,40 +12,39 @@ export const SharedKey = () => {
   }
 
   return (
-    <PageHeader ghost={false} title="Shared Key">
-      <Form
-        form={form}
-        initialValues={{ remember: true }}
-        layout="vertical"
-        onFinish={(values) => backupSharedKey(values.shared_key)}
+    <Form
+      title="Shared Key"
+      form={form}
+      initialValues={{ remember: true }}
+      layout="vertical"
+      onFinish={(values) => backupSharedKey(values.shared_key)}
+    >
+      <Form.Item
+        label="Shared Key"
+        name="shared_key"
+        rules={[{ required: true, message: 'Please input your search!' }]}
       >
-        <Form.Item
-          label="Shared Key"
-          name="shared_key"
-          rules={[{ required: true, message: 'Please input your search!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Row gutter={[24, 24]}>
-            <Col span={12}>
-              <Button type="primary" htmlType="submit" block loading={loading}>
-                Backup
-              </Button>
-            </Col>
-            <Col span={12}>
-              <Button
-                type="ghost"
-                block
-                loading={loading}
-                onClick={onRestoreSharedKey}
-              >
-                Restore
-              </Button>
-            </Col>
-          </Row>
-        </Form.Item>
-      </Form>
-    </PageHeader>
+        <Input />
+      </Form.Item>
+      <Form.Item>
+        <Row gutter={[24, 24]}>
+          <Col span={12}>
+            <Button type="primary" htmlType="submit" block loading={loading}>
+              Backup
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Button
+              type="ghost"
+              block
+              loading={loading}
+              onClick={onRestoreSharedKey}
+            >
+              Restore
+            </Button>
+          </Col>
+        </Row>
+      </Form.Item>
+    </Form>
   )
 }

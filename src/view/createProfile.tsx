@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import * as ed from '@noble/ed25519'
 
 import { Auth } from '@supabase/auth-ui-react'
-import { Button, Col, Form, Input, PageHeader, Row } from 'antd'
+import { Button, Col, Form, Input, Row } from 'antd'
 import { useCreateProfile } from 'hooks/useProfile'
 import { useUserKey } from 'hooks/useUserKey'
 
@@ -47,58 +47,50 @@ export const CreateProfile = () => {
   }
 
   return (
-    <PageHeader
-      ghost={false}
-      title="Create Profile"
-      subTitle={user?.email || '--'}
-      style={{ height: '100%' }}
+    <Form
+      title={`Create Profile: ${user?.email || '--'}`}
+      form={form}
+      initialValues={{ remember: true }}
+      layout="vertical"
+      onFinish={createProfile}
     >
-      <Form
-        form={form}
-        initialValues={{ remember: true }}
-        layout="vertical"
-        onFinish={createProfile}
+      <Form.Item
+        label="Private Key"
+        name="privKey"
+        rules={[{ required: true, message: 'Please input your private key!' }]}
       >
-        <Form.Item
-          label="Private Key"
-          name="privKey"
-          rules={[
-            { required: true, message: 'Please input your private key!' },
-          ]}
-        >
-          <Input
-            suffix={
-              <Button type="primary" onClick={onNewPrivKey}>
-                New
-              </Button>
-            }
-          />
-        </Form.Item>
+        <Input
+          suffix={
+            <Button type="primary" onClick={onNewPrivKey}>
+              New
+            </Button>
+          }
+        />
+      </Form.Item>
 
-        <Form.Item label="Public Key" name="pubKey">
-          <Input size="large" />
-        </Form.Item>
+      <Form.Item label="Public Key" name="pubKey">
+        <Input size="large" />
+      </Form.Item>
 
-        <Form.Item>
-          <Row gutter={[24, 24]}>
-            <Col span={12}>
-              <Button type="primary" htmlType="submit" block loading={loading}>
-                Submit
-              </Button>
-            </Col>
-            <Col span={12}>
-              <Button
-                type="ghost"
-                block
-                loading={loading}
-                onClick={onLoadPrivKey}
-              >
-                Load from local storage
-              </Button>
-            </Col>
-          </Row>
-        </Form.Item>
-      </Form>
-    </PageHeader>
+      <Form.Item>
+        <Row gutter={[24, 24]}>
+          <Col span={12}>
+            <Button type="primary" htmlType="submit" block loading={loading}>
+              Submit
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Button
+              type="ghost"
+              block
+              loading={loading}
+              onClick={onLoadPrivKey}
+            >
+              Load from local storage
+            </Button>
+          </Col>
+        </Row>
+      </Form.Item>
+    </Form>
   )
 }

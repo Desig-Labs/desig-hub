@@ -1,3 +1,3 @@
-# React Solana Template
+# Desig Hub
 
-React + Solana = DApp
+Desig wallet plugins

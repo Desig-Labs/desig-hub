@@ -1,4 +1,4 @@
-import { Button, Form, Input, PageHeader } from 'antd'
+import { Button, Form, Input } from 'antd'
 
 import { useProfile, useUpdateProfile } from 'hooks/useProfile'
 import { useEffect } from 'react'
@@ -16,35 +16,29 @@ const ProfileManagement = () => {
   }, [form, profile])
 
   return (
-    <PageHeader
-      ghost={false}
+    <Form
       title="Profile Management"
-      subTitle={profile?.username || '--'}
-      style={{ height: '100%' }}
+      form={form}
+      initialValues={{ remember: true }}
+      layout="vertical"
+      onFinish={updateProfile}
     >
-      <Form
-        form={form}
-        initialValues={{ remember: true }}
-        layout="vertical"
-        onFinish={updateProfile}
-      >
-        <Form.Item label="UserID" name="uid">
-          <Input size="large" />
-        </Form.Item>
-        <Form.Item label="Public Key" name="public_key">
-          <Input size="large" />
-        </Form.Item>
-        <Form.Item label="User Name" name="username">
-          <Input size="large" />
-        </Form.Item>
+      <Form.Item label="UserID" name="uid">
+        <Input size="large" />
+      </Form.Item>
+      <Form.Item label="Public Key" name="public_key">
+        <Input size="large" />
+      </Form.Item>
+      <Form.Item label="User Name" name="username">
+        <Input size="large" />
+      </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loading}>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </PageHeader>
+      <Form.Item>
+        <Button type="primary" htmlType="submit" block loading={loading}>
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
   )
 }
 
