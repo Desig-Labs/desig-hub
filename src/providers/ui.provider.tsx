@@ -2,7 +2,7 @@ import { ReactNode, useEffect } from 'react'
 import { create } from 'zustand'
 
 import { Col, ConfigProvider, Layout, Row } from 'antd'
-import Splash from 'components/splash'
+import Splash from 'components/system/splash'
 
 import 'static/styles/index.scss'
 import { generateTheme } from 'static/styles/theme'

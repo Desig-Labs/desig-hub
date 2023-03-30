@@ -4,6 +4,25 @@ import { Col, Row } from 'antd'
 import BackupSocials from './socials'
 import CardProcess from 'components/cardProcess'
 import BackupDevice from './device'
+import BackupDesigWallet from './wallet'
+
+const STEPS = [
+  {
+    title: 'Socials',
+    description: 'Pair with your socials account',
+    Component: BackupSocials,
+  },
+  {
+    title: 'Wallet',
+    description: 'Connect with your desig wallet',
+    Component: BackupDesigWallet,
+  },
+  {
+    title: 'Device',
+    description: 'Save in your device storage',
+    Component: BackupDevice,
+  },
+]
 
 const BackupShared = () => {
   const [step, setStep] = useState(1)
@@ -28,31 +47,16 @@ const BackupShared = () => {
 
   return (
     <Row justify="center" gutter={[24, 24]}>
-      <Col span={8}>
-        <CardProcess
-          {...stepProps(1, 'Socials')}
-          description="Pair with your socials account"
-        >
-          <BackupSocials onSuccess={() => handleSetStep(1)} />
-        </CardProcess>
-      </Col>
-      <Col span={8}>
-        <CardProcess
-          {...stepProps(2, 'Device')}
-          description="Save in your device storage"
-        >
-          <BackupDevice onSuccess={() => handleSetStep(2)} />
-        </CardProcess>
-      </Col>
-      <Col span={8}>
-        <CardProcess
-          type="waiting"
-          title="3. Password"
-          description="Set recovery password"
-        >
-          haha
-        </CardProcess>
-      </Col>
+      {STEPS.map(({ title, description, Component }, index) => {
+        const id = index + 1
+        return (
+          <Col span={8} key={index}>
+            <CardProcess {...stepProps(id, title)} description={description}>
+              <Component onSuccess={() => handleSetStep(id)} />
+            </CardProcess>
+          </Col>
+        )
+      })}
     </Row>
   )
 }

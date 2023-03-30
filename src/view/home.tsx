@@ -1,6 +1,6 @@
 import { Layout } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
-import Banner from 'components/banner'
+import Banner from 'components/system/banner'
 import BackupShared from './backupShared'
 
 const Home = () => {

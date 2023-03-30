@@ -1,5 +1,5 @@
 import { Col, Row, Typography } from 'antd'
-import CopyText from './copyText'
+import CopyText from './utils/copyText'
 
 import { shortenString } from 'utils'
 

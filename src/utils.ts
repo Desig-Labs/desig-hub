@@ -16,8 +16,7 @@ export type RequestBodyAuth = SignedData & {
   signature: string
 }
 
-export function encodeMessage(data: Record<string, any>) {
-  const msg = JSON.stringify(data)
+export function encodeMessage(msg: string) {
   const utf8Encode = new TextEncoder()
   return utf8Encode.encode(msg)
 }

@@ -2,7 +2,7 @@ import * as ed from '@noble/ed25519'
 import { useCallback, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { encodeMessage, normalizeSignedData, RequestBodyAuth } from './../utils'
+import { normalizeSignedData, RequestBodyAuth } from './../utils'
 
 import { supabase } from 'configs'
 import { useWallet } from './useWallet'
@@ -24,8 +24,7 @@ export const useInvoke = () => {
           data: bodyData,
           time: new Date().toISOString(),
         })
-        const message = encodeMessage(reqData)
-        const signature = await signMessage(message)
+        const signature = await signMessage(JSON.stringify(reqData))
         const reqBody: RequestBodyAuth = {
           ...reqData,
           publicKey: pubKey,

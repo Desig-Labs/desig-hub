@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import * as ed from '@noble/ed25519'
 import { create } from 'zustand'
 
 import { DESIG_WALLET } from 'desig-wallet'
@@ -11,7 +10,7 @@ type WalletStorage = {
 }
 const useWalletStorage = create<WalletStorage>((set) => ({
   pubKey: null,
-  setWallet: (payload) => set((state) => Object.assign(state, payload)),
+  setWallet: (payload) => set({ pubKey: payload.pubKey }),
 }))
 
 export const useWallet = () => {
@@ -20,22 +19,36 @@ export const useWallet = () => {
   const login = useCallback(async () => {
     try {
       const pubKey = await DESIG_WALLET.connect()
-      return setWallet({ pubKey })
+      setWallet({ pubKey })
+      return pubKey
     } catch (error: any) {
       toast(error.message, { type: 'error' })
     }
   }, [setWallet])
 
+  const logout = useCallback(async () => {
+    setWallet({ pubKey: null })
+  }, [setWallet])
+
   const signMessage = useCallback(
-    async (data: Uint8Array) => {
+    async (msg: string) => {
       if (!pubKey) await login()
-      const signature = await DESIG_WALLET.signMessage(
-        ed.utils.bytesToHex(data),
-      )
+
+      const signature = await DESIG_WALLET.signMessage(msg)
       return signature
     },
     [login, pubKey],
   )
 
-  return { pubKey, login, signMessage }
+  const getDeviceKey = useCallback(async () => {
+    await signMessage('GET_DEVICE_SHARED')
+    return 'DEVICE_SHARED'
+  }, [signMessage])
+
+  const getSocialKey = useCallback(async () => {
+    await signMessage('GET_SOCIAL_SHARED')
+    return 'SOCIAL_SHARED'
+  }, [signMessage])
+
+  return { pubKey, login, logout, signMessage, getDeviceKey, getSocialKey }
 }

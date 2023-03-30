@@ -4,7 +4,7 @@ import { useDebounce } from 'react-use'
 
 import { LoadingOutlined } from '@ant-design/icons'
 import { Col, Row, Space, Spin } from 'antd'
-import Desig from 'components/desig'
+import Desig from 'components/system/desig'
 
 const BaseSplash = styled.div({
   height: '100%',
