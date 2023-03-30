@@ -3,7 +3,7 @@ import { Auth } from '@supabase/auth-ui-react'
 
 import { supabase } from 'configs'
 import { useInvoke } from './useInvoke'
-import { useUserKey } from './useUserKey'
+import { useWallet } from './useWallet'
 
 export type Profile = {
   uid: string
@@ -34,7 +34,7 @@ export const useProfile = () => {
 
 export const useCreateProfile = () => {
   const { user } = Auth.useUser()
-  const { pubKey } = useUserKey()
+  const { pubKey } = useWallet()
   const invoke = useInvoke()
 
   const createProfile = useCallback(async () => {

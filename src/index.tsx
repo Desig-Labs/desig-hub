@@ -7,20 +7,23 @@ import View from 'view'
 
 import { supabase } from 'configs'
 import reportWebVitals from 'reportWebVitals'
-import 'static/styles/index.less'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
+import UiProvider from 'providers/ui.provider'
 
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <BrowserRouter>
-    <QueryClientProvider client={queryClient}>
-      <Auth.UserContextProvider supabaseClient={supabase}>
-        <View />
-        <ToastContainer />
-      </Auth.UserContextProvider>
-    </QueryClientProvider>
+    <UiProvider>
+      <QueryClientProvider client={queryClient}>
+        <Auth.UserContextProvider supabaseClient={supabase}>
+          <View />
+          <ToastContainer />
+        </Auth.UserContextProvider>
+      </QueryClientProvider>
+    </UiProvider>
   </BrowserRouter>,
 )
 

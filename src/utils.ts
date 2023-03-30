@@ -29,3 +29,11 @@ export function normalizeSignedData(signedData: SignedData): SignedData {
   if (!time) throw new Error('Time must be required!')
   return { action, data, time }
 }
+
+export const shortenString = (string: string, num = 4, delimiter = '...') => {
+  return (
+    string.substring(0, num) +
+    delimiter +
+    string.substring(string.length - num, string.length)
+  )
+}

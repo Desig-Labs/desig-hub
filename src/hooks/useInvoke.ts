@@ -2,20 +2,22 @@ import * as ed from '@noble/ed25519'
 import { useCallback, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { useUserKey } from 'hooks/useUserKey'
 import { encodeMessage, normalizeSignedData, RequestBodyAuth } from './../utils'
 
 import { supabase } from 'configs'
+import { useWallet } from './useWallet'
 
 export const useInvoke = () => {
   const [loading, setLoading] = useState(false)
-  const { priKey, pubKey } = useUserKey()
+
+  const { pubKey, signMessage } = useWallet()
 
   const call = useCallback(
-    async (action: any, bodyData: Record<string, any>, privateKey = priKey) => {
+    async (action: any, bodyData: Record<string, any>) => {
       try {
         setLoading(true)
-        if (!privateKey || !pubKey) throw new Error('Invalid private key!')
+        if (!pubKey) throw new Error('Login fist!')
+
         // build request body
         const reqData = normalizeSignedData({
           action,
@@ -23,14 +25,12 @@ export const useInvoke = () => {
           time: new Date().toISOString(),
         })
         const message = encodeMessage(reqData)
-        const signature = await ed.sign(message, privateKey)
+        const signature = await signMessage(message)
         const reqBody: RequestBodyAuth = {
           ...reqData,
           publicKey: pubKey,
           signature: ed.utils.bytesToHex(signature),
         }
-        const test = ed.utils.hexToBytes(pubKey)
-        console.log('test', test)
         const { data } = await supabase.functions.invoke(action, {
           body: reqBody,
         })
@@ -48,7 +48,7 @@ export const useInvoke = () => {
         setLoading(false)
       }
     },
-    [priKey, pubKey],
+    [pubKey, signMessage],
   )
 
   return { call, loading }

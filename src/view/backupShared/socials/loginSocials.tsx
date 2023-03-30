@@ -6,39 +6,43 @@ import { Button, Col, Modal, Row } from 'antd'
 
 import { supabase } from 'configs'
 
-const SignInSocials = () => {
+const LoginSocials = () => {
   const [open, setOpen] = useState(false)
   const { user } = Auth.useUser()
-
-  const HandleButton = () => {
-    if (user) {
-      return (
-        <Button key="1" onClick={() => supabase.auth.signOut()}>
-          Logout
-        </Button>
-      )
-    }
-    return (
-      <Button onClick={() => setOpen(true)} size="large" type="primary">
-        Login
-      </Button>
-    )
-  }
 
   return (
     <Row>
       <Col span={24}>
-        <HandleButton />
+        {user ? (
+          <Button
+            onClick={() => supabase.auth.signOut()}
+            size="large"
+            type="primary"
+            block
+          >
+            Logout
+          </Button>
+        ) : (
+          <Button
+            onClick={() => setOpen(true)}
+            size="large"
+            type="primary"
+            block
+          >
+            Login social
+          </Button>
+        )}
         <Modal
           open={open}
           footer={null}
-          title="Login Desig"
+          title="Login with socials"
           onCancel={() => setOpen(false)}
         >
           <Auth
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             providers={['google', 'discord', 'facebook', 'twitter']}
+            onlyThirdPartyProviders
           />
         </Modal>
       </Col>
@@ -46,4 +50,4 @@ const SignInSocials = () => {
   )
 }
 
-export default SignInSocials
+export default LoginSocials
