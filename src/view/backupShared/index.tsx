@@ -19,7 +19,7 @@ const STEPS = [
   },
   {
     title: 'Backup',
-    description: 'Backup your shared keys (social key, device key)',
+    description: 'Backup your shared keys (social,device)',
     Component: Backup,
   },
 ]
