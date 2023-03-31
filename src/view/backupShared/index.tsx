@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import BackupSocials from './socials'
 import CardProcess from 'components/cardProcess'
 import BackupDevice from './device'
-import BackupDesigWallet from './wallet'
+import BackupWallet from './wallet'
 
 const STEPS = [
   {
@@ -15,7 +15,7 @@ const STEPS = [
   {
     title: 'Wallet',
     description: 'Connect with your desig wallet',
-    Component: BackupDesigWallet,
+    Component: BackupWallet,
   },
   {
     title: 'Device',

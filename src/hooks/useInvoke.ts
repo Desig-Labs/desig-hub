@@ -5,18 +5,17 @@ import { toast } from 'react-toastify'
 import { normalizeSignedData, RequestBodyAuth } from './../utils'
 
 import { supabase } from 'configs'
-import { useWallet } from './useWallet'
+import { useDesiger } from 'providers/desiger.provider'
 
 export const useInvoke = () => {
   const [loading, setLoading] = useState(false)
-
-  const { pubKey, signMessage } = useWallet()
+  const { pubKey: publicKey, signMessage } = useDesiger()
 
   const call = useCallback(
     async (action: any, bodyData: Record<string, any>) => {
       try {
         setLoading(true)
-        if (!pubKey) throw new Error('Login fist!')
+        if (!publicKey) throw new Error('Login fist!')
 
         // build request body
         const reqData = normalizeSignedData({
@@ -27,7 +26,7 @@ export const useInvoke = () => {
         const signature = await signMessage(JSON.stringify(reqData))
         const reqBody: RequestBodyAuth = {
           ...reqData,
-          publicKey: pubKey,
+          publicKey: publicKey,
           signature: ed.utils.bytesToHex(signature),
         }
         const { data } = await supabase.functions.invoke(action, {
@@ -47,7 +46,7 @@ export const useInvoke = () => {
         setLoading(false)
       }
     },
-    [pubKey, signMessage],
+    [publicKey, signMessage],
   )
 
   return { call, loading }

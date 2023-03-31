@@ -1,6 +1,6 @@
-import { Card, Col, Row, Space, Typography } from 'antd'
+import { Col, Row } from 'antd'
 import Desig from 'components/system/desig'
-import IonIcon from '@sentre/antd-ionicon'
+import Desiger from 'desig-wallet/desiger'
 
 export default function Header() {
   const onHome = () => (window.location.href = window.location.origin)
@@ -11,21 +11,7 @@ export default function Header() {
         <Desig onClick={onHome} style={{ cursor: 'pointer' }} />
       </Col>
       <Col>
-        <Card bodyStyle={{ padding: '8px 12px' }}>
-          <Row gutter={[12, 12]}>
-            <Col span={24}>
-              <Typography.Link
-                href="https://twitter.com/DesigLabs"
-                target="_blank"
-              >
-                <Space>
-                  <IonIcon name="logo-twitter" />
-                  @DesigLabs
-                </Space>
-              </Typography.Link>
-            </Col>
-          </Row>
-        </Card>
+        <Desiger />
       </Col>
     </Row>
   )

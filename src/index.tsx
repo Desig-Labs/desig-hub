@@ -11,6 +11,7 @@ import reportWebVitals from 'reportWebVitals'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import UiProvider from 'providers/ui.provider'
+import DesigerProvider from 'providers/desiger.provider'
 
 const queryClient = new QueryClient()
 
@@ -19,8 +20,10 @@ createRoot(document.getElementById('root') as HTMLElement).render(
     <UiProvider>
       <QueryClientProvider client={queryClient}>
         <Auth.UserContextProvider supabaseClient={supabase}>
-          <View />
-          <ToastContainer />
+          <DesigerProvider>
+            <View />
+            <ToastContainer />
+          </DesigerProvider>
         </Auth.UserContextProvider>
       </QueryClientProvider>
     </UiProvider>

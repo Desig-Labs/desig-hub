@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { Auth } from '@supabase/auth-ui-react'
 
 import { supabase } from 'configs'
 import { useInvoke } from './useInvoke'
@@ -11,29 +10,31 @@ export type Profile = {
 }
 
 export const useProfile = () => {
-  const { user } = Auth.useUser()
   const invoke = useInvoke()
 
-  const fetchProfile = useCallback(async () => {
-    if (!user) return null
+  const fetchProfile = useCallback(async (public_key?: string) => {
+    if (!public_key) return
     // TODO: Implement permission select with id
     const { data } = await supabase
       .from('profiles')
       .select('*')
-      .eq('uid', user.id)
+      .eq('public_key', public_key)
     const profile = data?.[0]
     return profile as Profile
-  }, [user])
+  }, [])
 
   const createProfile = useCallback(
-    async (public_key: string) => {
+    async (data: { public_key: string; username: string }) => {
       return invoke.call('create-profile', {
-        username: user?.id,
-        public_key,
+        ...data,
       })
     },
-    [invoke, user],
+    [invoke],
   )
+
+  const linkSocial = useCallback(async () => {
+    return invoke.call('link-social', {})
+  }, [invoke])
 
   const updateProfile = useCallback(
     async (params: { username: string }) => {
@@ -44,5 +45,5 @@ export const useProfile = () => {
     [invoke],
   )
 
-  return { fetchProfile, createProfile, updateProfile }
+  return { fetchProfile, createProfile, updateProfile, linkSocial }
 }

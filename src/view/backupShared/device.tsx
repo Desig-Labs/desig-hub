@@ -3,18 +3,17 @@ import { toast } from 'react-toastify'
 
 import { Button, Col, Row, Space } from 'antd'
 import { RowInfo } from 'components/rowInfo'
-
-import { useWallet } from 'hooks/useWallet'
+import { useDesiger } from 'providers/desiger.provider'
 
 const BackupDevice = ({ onSuccess }: { onSuccess: () => void }) => {
-  const wallet = useWallet()
+  const { getDeviceKey } = useDesiger()
   const [sharedKey, setSharedKey] = useState<string>()
   const [loading, setLoading] = useState(false)
 
   const onBackupDevice = async () => {
     try {
       await setLoading(true)
-      const sharedKey = await wallet.getDeviceKey()
+      const sharedKey = await getDeviceKey()
       setSharedKey(sharedKey)
       onSuccess()
       toast('Backup device successfully!', { type: 'success' })

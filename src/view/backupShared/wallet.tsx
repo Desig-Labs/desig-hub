@@ -6,13 +6,12 @@ import { RowInfo } from 'components/rowInfo'
 
 import { useProfile } from 'hooks/useProfile'
 import { useSharedKey } from 'hooks/useSharedKey'
-import { useWallet } from 'hooks/useWallet'
-import { supabase } from 'configs'
+import { useDesiger } from 'providers/desiger.provider'
 
 const BackupWallet = ({ onSuccess }: { onSuccess: () => void }) => {
-  const wallet = useWallet()
   const [loading, setLoading] = useState(false)
-  const { fetchProfile, createProfile } = useProfile()
+  const { pubKey, getSocialKey } = useDesiger()
+  const { fetchProfile, linkSocial } = useProfile()
   const { backupSharedKey } = useSharedKey()
 
   const handleLinkWithSocial = async () => {
@@ -21,20 +20,17 @@ const BackupWallet = ({ onSuccess }: { onSuccess: () => void }) => {
       // Tracking created profile
       const profile = await fetchProfile()
       if (profile) {
-        if (profile.public_key !== wallet.pubKey)
+        if (profile.public_key !== pubKey)
           throw new Error(`Social wallet ${profile.public_key} not match! `)
       }
       // Create new profile
-      else {
-        await createProfile(wallet.pubKey!)
-      }
-      const sharedKey = await wallet.getSocialKey()
+      await linkSocial()
+      const sharedKey = await getSocialKey()
       await backupSharedKey(sharedKey)
 
       onSuccess()
     } catch (error: any) {
       toast(error.message, { type: 'error' })
-      supabase.auth.signOut()
     } finally {
       setLoading(false)
     }
@@ -44,28 +40,20 @@ const BackupWallet = ({ onSuccess }: { onSuccess: () => void }) => {
     <Row gutter={[24, 24]}>
       <Col span={24}>
         <Space direction="vertical" style={{ width: '100%' }}>
-          <RowInfo title="Public Key:" value={wallet.pubKey} />
+          <RowInfo title="Public Key:" value={pubKey} />
           {/* <RowInfo title="Shared Key:" value={sharedKey} /> */}
         </Space>
       </Col>
-      {!wallet.pubKey ? (
-        <Col span={24}>
-          <Button onClick={wallet.login} type="primary" block>
-            Connect Wallet
-          </Button>
-        </Col>
-      ) : (
-        <Col span={24}>
-          <Button
-            onClick={handleLinkWithSocial}
-            type="primary"
-            block
-            loading={loading}
-          >
-            Link to social
-          </Button>
-        </Col>
-      )}
+      <Col span={24}>
+        <Button
+          onClick={handleLinkWithSocial}
+          type="primary"
+          block
+          loading={loading}
+        >
+          Link to social
+        </Button>
+      </Col>
     </Row>
   )
 }
