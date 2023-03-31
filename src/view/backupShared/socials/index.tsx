@@ -5,7 +5,7 @@ import { Col, Row, Space } from 'antd'
 import { RowInfo } from 'components/rowInfo'
 import LoginSocials from './loginSocials'
 
-const BackupSocials = ({ onSuccess }: { onSuccess: () => void }) => {
+const Socials = ({ onSuccess }: { onSuccess: () => void }) => {
   const { user } = Auth.useUser()
 
   useEffect(() => {
@@ -26,4 +26,4 @@ const BackupSocials = ({ onSuccess }: { onSuccess: () => void }) => {
   )
 }
 
-export default BackupSocials
+export default Socials

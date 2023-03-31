@@ -5,14 +5,12 @@ import { Button, Col, Row, Space } from 'antd'
 import { RowInfo } from 'components/rowInfo'
 
 import { useProfile } from 'hooks/useProfile'
-import { useSharedKey } from 'hooks/useSharedKey'
 import { useDesiger } from 'providers/desiger.provider'
 
-const BackupWallet = ({ onSuccess }: { onSuccess: () => void }) => {
+const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
   const [loading, setLoading] = useState(false)
-  const { pubKey, getSocialKey } = useDesiger()
+  const { pubKey } = useDesiger()
   const { fetchProfile, linkSocial } = useProfile()
-  const { backupSharedKey } = useSharedKey()
 
   const handleLinkWithSocial = async () => {
     try {
@@ -24,11 +22,8 @@ const BackupWallet = ({ onSuccess }: { onSuccess: () => void }) => {
           throw new Error(`Social wallet ${profile.public_key} not match! `)
       }
       // Create new profile
-      await linkSocial()
-      const sharedKey = await getSocialKey()
-      await backupSharedKey(sharedKey)
-
-      onSuccess()
+      const data = await linkSocial()
+      if (!!data) onSuccess()
     } catch (error: any) {
       toast(error.message, { type: 'error' })
     } finally {
@@ -58,4 +53,4 @@ const BackupWallet = ({ onSuccess }: { onSuccess: () => void }) => {
   )
 }
 
-export default BackupWallet
+export default Wallet

@@ -1,26 +1,26 @@
 import { useCallback, useState } from 'react'
 
 import { Col, Row } from 'antd'
-import BackupSocials from './socials'
+import Socials from './socials'
 import CardProcess from 'components/cardProcess'
-import BackupDevice from './device'
-import BackupWallet from './wallet'
+import Backup from './backup'
+import Wallet from './wallet'
 
 const STEPS = [
   {
     title: 'Socials',
     description: 'Pair with your socials account',
-    Component: BackupSocials,
+    Component: Socials,
   },
   {
     title: 'Wallet',
-    description: 'Connect with your desig wallet',
-    Component: BackupWallet,
+    description: 'Link social with your desig wallet',
+    Component: Wallet,
   },
   {
-    title: 'Device',
-    description: 'Save in your device storage',
-    Component: BackupDevice,
+    title: 'Backup',
+    description: 'Backup your shared keys (social key, device key)',
+    Component: Backup,
   },
 ]
 

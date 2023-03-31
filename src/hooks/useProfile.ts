@@ -45,5 +45,11 @@ export const useProfile = () => {
     [invoke],
   )
 
-  return { fetchProfile, createProfile, updateProfile, linkSocial }
+  return {
+    fetchProfile,
+    createProfile,
+    updateProfile,
+    linkSocial,
+    loading: invoke.loading,
+  }
 }

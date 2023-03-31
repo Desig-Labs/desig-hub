@@ -32,29 +32,21 @@ export const useDesigerStore = create<DesigerStore>()((set) => ({
 export const useDesiger = () => {
   const desiger = useDesigerStore((desiger) => desiger, isEqual)
 
-  const signMessage = useCallback(async (msg: string) => {
-    const signature = await DESIGER.signMessage(msg)
-    return signature
-  }, [])
-
-  const getUserSharedKey = useCallback(async (id: string) => {
-    return id
-  }, [])
-
   const getDeviceKey = useCallback(async () => {
-    await signMessage('GET_DEVICE_SHARED')
+    // await DESIGER.signMessage('GET_DEVICE_SHARED')
+    console.log('DEVICE_SHARED')
     return 'DEVICE_SHARED'
-  }, [signMessage])
+  }, [])
 
   const getSocialKey = useCallback(async () => {
-    await signMessage('GET_SOCIAL_SHARED')
+    // await DESIGER.signMessage('GET_SOCIAL_SHARED')
+    console.log('SOCIAL_SHARED')
     return 'SOCIAL_SHARED'
-  }, [signMessage])
+  }, [])
 
   return {
+    ...DESIGER,
     ...desiger,
-    signMessage,
-    getUserSharedKey,
     getDeviceKey,
     getSocialKey,
   }

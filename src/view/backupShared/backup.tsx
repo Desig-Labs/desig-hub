@@ -4,17 +4,29 @@ import { toast } from 'react-toastify'
 import { Button, Col, Row, Space } from 'antd'
 import { RowInfo } from 'components/rowInfo'
 import { useDesiger } from 'providers/desiger.provider'
+import { useSharedKey } from 'hooks/useSharedKey'
 
-const BackupDevice = ({ onSuccess }: { onSuccess: () => void }) => {
-  const { getDeviceKey } = useDesiger()
+const Backup = ({ onSuccess }: { onSuccess: () => void }) => {
   const [sharedKey, setSharedKey] = useState<string>()
   const [loading, setLoading] = useState(false)
+  const { getDeviceKey, getSocialKey } = useDesiger()
+  const { backupSharedKey } = useSharedKey()
 
+  const onBackupSocials = async () => {
+    const sharedKey = await getSocialKey()
+    await backupSharedKey(sharedKey)
+  }
   const onBackupDevice = async () => {
+    const sharedKey = await getDeviceKey()
+    localStorage.setItem('DEVICE_SHARED_KEY', sharedKey)
+  }
+
+  const onBackup = async () => {
     try {
       await setLoading(true)
-      const sharedKey = await getDeviceKey()
-      setSharedKey(sharedKey)
+      await onBackupSocials()
+      await onBackupDevice()
+      setSharedKey('****')
       onSuccess()
       toast('Backup device successfully!', { type: 'success' })
     } catch (error: any) {
@@ -33,7 +45,7 @@ const BackupDevice = ({ onSuccess }: { onSuccess: () => void }) => {
       </Col>
       <Col span={24}>
         <Button
-          onClick={onBackupDevice}
+          onClick={onBackup}
           type="primary"
           block
           loading={loading}
@@ -46,4 +58,4 @@ const BackupDevice = ({ onSuccess }: { onSuccess: () => void }) => {
   )
 }
 
-export default BackupDevice
+export default Backup

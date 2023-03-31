@@ -1,13 +1,14 @@
-import { Modal, Form, Input, Button } from 'antd'
 import { useCallback, useEffect } from 'react'
 import * as ed from '@noble/ed25519'
+
+import { Modal, Form, Input, Button } from 'antd'
 import { useProfile } from 'hooks/useProfile'
 import { DESIGER } from 'desig-wallet'
 
 const SetupDesiger = () => {
   const [form] = Form.useForm()
   const privKey = Form.useWatch('privKey', form)
-  const { createProfile } = useProfile()
+  const { loading, createProfile } = useProfile()
 
   const syncPublicKey = useCallback(async () => {
     let newPubKey = ''
@@ -81,7 +82,7 @@ const SetupDesiger = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={false}>
+          <Button type="primary" htmlType="submit" block loading={loading}>
             Submit
           </Button>
         </Form.Item>

@@ -9,12 +9,13 @@ import { useDesiger } from 'providers/desiger.provider'
 
 export const useInvoke = () => {
   const [loading, setLoading] = useState(false)
-  const { pubKey: publicKey, signMessage } = useDesiger()
+  const { getDesigerAddress, signMessage } = useDesiger()
 
   const call = useCallback(
     async (action: any, bodyData: Record<string, any>) => {
       try {
         setLoading(true)
+        const publicKey = await getDesigerAddress()
         if (!publicKey) throw new Error('Login fist!')
 
         // build request body
@@ -46,7 +47,7 @@ export const useInvoke = () => {
         setLoading(false)
       }
     },
-    [publicKey, signMessage],
+    [getDesigerAddress, signMessage],
   )
 
   return { call, loading }
