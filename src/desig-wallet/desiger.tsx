@@ -6,7 +6,7 @@ import SetupDesiger from './setupDesiger'
 const Desiger = () => {
   const desiger = useDesiger()
 
-  if (!desiger.pubKey) {
+  if (!desiger.username) {
     return (
       <Card bodyStyle={{ padding: '8px 12px' }}>
         <Row gutter={[12, 12]}>

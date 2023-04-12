@@ -1,22 +1,20 @@
-import * as ed from '@noble/ed25519'
 import { useCallback, useState } from 'react'
 import { toast } from 'react-toastify'
-
-import { normalizeSignedData, RequestBodyAuth } from './../utils'
+import { encodeMessage, normalizeSignedData, RequestBodyAuth } from './../utils'
 
 import { supabase } from 'configs'
 import { useDesiger } from 'providers/desiger.provider'
+import { utils } from '@noble/ed25519'
 
 export const useInvoke = () => {
   const [loading, setLoading] = useState(false)
-  const { getDesigerAddress, signMessage } = useDesiger()
+  const { desig, pubKey } = useDesiger()
 
   const call = useCallback(
     async (action: any, bodyData: Record<string, any>) => {
       try {
         setLoading(true)
-        const publicKey = await getDesigerAddress()
-        if (!publicKey) throw new Error('Login fist!')
+        if (!desig || !pubKey) throw new Error('Install desig fist')
 
         // build request body
         const reqData = normalizeSignedData({
@@ -24,11 +22,14 @@ export const useInvoke = () => {
           data: bodyData,
           time: new Date().toISOString(),
         })
-        const signature = await signMessage(JSON.stringify(reqData))
+        const { signature, pubkey } = await desig.authorize(
+          encodeMessage(JSON.stringify(reqData)),
+        )
+        console.log('pubkey', pubkey)
         const reqBody: RequestBodyAuth = {
           ...reqData,
-          publicKey: publicKey,
-          signature: ed.utils.bytesToHex(signature),
+          publicKey: pubKey,
+          signature: utils.bytesToHex(signature),
         }
         const { data } = await supabase.functions.invoke(action, {
           body: reqBody,
@@ -42,12 +43,13 @@ export const useInvoke = () => {
         toast(`${action} successfully`, { type: 'success' })
         return data
       } catch (error: any) {
-        toast(`${action} error: ${error.message}`, { type: 'error' })
+        console.log('error', error)
+        toast(`${action} error: ${error?.message || error}`, { type: 'error' })
       } finally {
         setLoading(false)
       }
     },
-    [getDesigerAddress, signMessage],
+    [desig, pubKey],
   )
 
   return { call, loading }

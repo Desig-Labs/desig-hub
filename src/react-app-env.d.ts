@@ -5,9 +5,19 @@ declare module '*.md' {
   export default value
 }
 
+interface IUID {
+  connect(): Promise<Uint8Array>
+  authorize(
+    message: Uint8Array,
+  ): Promise<{ signature: Uint8Array; pubkey: Uint8Array }>
+  requestCloudShare(): Promise<{ cloudShare: Uint8Array }>
+}
+
 interface Window {
   ethereum: any
-  desig: any
+  desig: {
+    uid: IUID
+  }
 }
 
 type Theme = 'light' | 'dark'

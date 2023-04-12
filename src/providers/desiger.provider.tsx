@@ -1,7 +1,7 @@
+import { utils } from '@noble/ed25519'
 import { Fragment, ReactNode, useCallback, useEffect } from 'react'
 import isEqual from 'react-fast-compare'
 import { create } from 'zustand'
-import { DESIGER } from 'desig-wallet'
 
 import { useProfile } from 'hooks/useProfile'
 
@@ -12,17 +12,21 @@ import { useProfile } from 'hooks/useProfile'
 export type DesigerStore = {
   pubKey?: string
   username?: string
+  desig?: IUID
   loading: boolean
-  setDesiger: (payload: { pubKey?: string; username?: string }) => void
+  setProfile: (payload: { pubKey?: string; username?: string }) => void
   setLoading: (loading: boolean) => void
+  setDesig: (desig: IUID) => void
 }
 
 export const useDesigerStore = create<DesigerStore>()((set) => ({
   pubKey: undefined,
   username: undefined,
+  desig: undefined,
   loading: true,
-  setDesiger: ({ pubKey, username }) => set({ pubKey, username }),
+  setProfile: ({ pubKey, username }) => set({ pubKey, username }),
   setLoading: (loading) => set({ loading }),
+  setDesig: (desig: IUID) => set({ desig }),
 }))
 
 /**
@@ -39,13 +43,12 @@ export const useDesiger = () => {
   }, [])
 
   const getSocialKey = useCallback(async () => {
-    // await DESIGER.signMessage('GET_SOCIAL_SHARED')
-    console.log('SOCIAL_SHARED')
-    return 'SOCIAL_SHARED'
-  }, [])
+    if (!desiger.desig) throw new Error('Login fist')
+    const { cloudShare } = await desiger.desig.requestCloudShare()
+    return utils.bytesToHex(cloudShare)
+  }, [desiger.desig])
 
   return {
-    ...DESIGER,
     ...desiger,
     getDeviceKey,
     getSocialKey,
@@ -57,34 +60,44 @@ export const useDesiger = () => {
  */
 
 export default function DesigerProvider({ children }: { children: ReactNode }) {
-  const setDesiger = useDesigerStore(({ setDesiger }) => setDesiger)
-  const setLoading = useDesigerStore(({ setLoading }) => setLoading)
+  const { setDesig, setProfile, setLoading } = useDesigerStore()
+  // const setProfile = useDesigerStore(({ setProfile }) => setProfile)
+  // const setLoading = useDesigerStore(({ setLoading }) => setLoading)
   const { fetchProfile } = useProfile()
 
-  const initDesiger = useCallback(async () => {
-    try {
-      setLoading(true)
-      const desiger = await DESIGER.getDesigerAddress()
-      if (!desiger) throw new Error('Login fist')
-
-      const profile = await fetchProfile(desiger)
-      return setDesiger({
-        pubKey: profile?.public_key,
-        username: profile?.username,
-      })
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }, [fetchProfile, setDesiger, setLoading])
+  const initDesiger = useCallback(
+    async (provider: IUID) => {
+      const desiger: Partial<DesigerStore> = {
+        pubKey: undefined,
+        username: undefined,
+      }
+      try {
+        let publicKey = await provider.connect()
+        desiger.pubKey = utils.bytesToHex(publicKey)
+        const profile = await fetchProfile(desiger.pubKey)
+        desiger.username = profile?.username
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+        return setProfile(desiger)
+      }
+    },
+    [fetchProfile, setLoading, setProfile],
+  )
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      initDesiger()
+    const interval = setInterval(() => {
+      if (!window.desig?.uid) return
+      setDesig(window.desig.uid)
+      clearInterval(interval)
+      initDesiger(window.desig.uid)
     }, 500)
-    return () => clearTimeout(timeout)
-  }, [initDesiger])
+  }, [setDesig, initDesiger])
+
+  // useEffect(() => {
+  //   initDesiger()
+  // }, [initDesiger])
 
   return <Fragment>{children}</Fragment>
 }
