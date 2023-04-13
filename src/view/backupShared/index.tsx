@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react'
 import { Col, Row } from 'antd'
 import Socials from './socials'
 import CardProcess from 'components/cardProcess'
-import Backup from './backup'
 import Wallet from './wallet'
 
 const STEPS = [
@@ -16,11 +15,6 @@ const STEPS = [
     title: 'Wallet',
     description: 'Link social with your desig wallet',
     Component: Wallet,
-  },
-  {
-    title: 'Backup',
-    description: 'Backup your shared keys (social,device)',
-    Component: Backup,
   },
 ]
 
@@ -50,7 +44,7 @@ const BackupShared = () => {
       {STEPS.map(({ title, description, Component }, index) => {
         const id = index + 1
         return (
-          <Col span={8} key={index}>
+          <Col span={12} key={index}>
             <CardProcess {...stepProps(id, title)} description={description}>
               <Component onSuccess={() => handleSetStep(id)} />
             </CardProcess>

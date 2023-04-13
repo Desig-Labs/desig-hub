@@ -4,7 +4,9 @@ import { useDesigerStore } from 'providers/desiger.provider'
 
 const SetupDesiger = () => {
   const [form] = Form.useForm()
-  const { pubKey } = useDesigerStore()
+  const {
+    profile: { public_key },
+  } = useDesigerStore()
   const { loading, createProfile } = useProfile()
 
   const handleCreateDesiger = async (values: Record<string, string>) => {
@@ -25,7 +27,7 @@ const SetupDesiger = () => {
         onFinish={handleCreateDesiger}
       >
         <Form.Item label="Public Key">
-          <Input disabled size="large" value={pubKey} />
+          <Input disabled size="large" value={public_key} />
         </Form.Item>
 
         <Form.Item

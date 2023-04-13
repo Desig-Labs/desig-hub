@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { Auth } from '@supabase/auth-ui-react'
 import { Col, Row, Space } from 'antd'
-import { RowInfo } from 'components/rowInfo'
+import RowInfo from 'components/rowInfo'
 import LoginSocials from './loginSocials'
 
 const Socials = ({ onSuccess }: { onSuccess: () => void }) => {

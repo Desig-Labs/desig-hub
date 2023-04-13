@@ -4,9 +4,12 @@ import { useDesiger } from 'providers/desiger.provider'
 import SetupDesiger from './setupDesiger'
 
 const Desiger = () => {
-  const desiger = useDesiger()
+  const {
+    loading,
+    profile: { username },
+  } = useDesiger()
 
-  if (!desiger.username) {
+  if (!username) {
     return (
       <Card bodyStyle={{ padding: '8px 12px' }}>
         <Row gutter={[12, 12]}>
@@ -22,7 +25,7 @@ const Desiger = () => {
             </Typography.Link>
           </Col>
         </Row>
-        {!desiger.loading && <SetupDesiger />}
+        {!loading && <SetupDesiger />}
       </Card>
     )
   }
@@ -36,9 +39,9 @@ const Desiger = () => {
               style={{ backgroundColor: '#7767f6', verticalAlign: 'middle' }}
               size={24}
             >
-              {desiger.username?.slice(0, 2).toUpperCase()}
+              {username?.slice(0, 2).toUpperCase()}
             </Avatar>
-            {desiger.username}
+            {username}
             <IonIcon name="wallet-outline" />
           </Space>
         </Col>

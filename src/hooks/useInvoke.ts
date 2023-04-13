@@ -8,13 +8,13 @@ import { utils } from '@noble/ed25519'
 
 export const useInvoke = () => {
   const [loading, setLoading] = useState(false)
-  const { desig, pubKey } = useDesiger()
+  const { desig } = useDesiger()
 
   const call = useCallback(
     async (action: any, bodyData: Record<string, any>) => {
       try {
         setLoading(true)
-        if (!desig || !pubKey) throw new Error('Install desig fist')
+        if (!desig) throw new Error('Install desig fist')
 
         // build request body
         const reqData = normalizeSignedData({
@@ -22,13 +22,14 @@ export const useInvoke = () => {
           data: bodyData,
           time: new Date().toISOString(),
         })
+
         const { signature, pubkey } = await desig.authorize(
           encodeMessage(JSON.stringify(reqData)),
         )
-        console.log('pubkey', pubkey)
+
         const reqBody: RequestBodyAuth = {
           ...reqData,
-          publicKey: pubKey,
+          publicKey: utils.bytesToHex(pubkey),
           signature: utils.bytesToHex(signature),
         }
         const { data } = await supabase.functions.invoke(action, {
@@ -49,7 +50,7 @@ export const useInvoke = () => {
         setLoading(false)
       }
     },
-    [desig, pubKey],
+    [desig],
   )
 
   return { call, loading }

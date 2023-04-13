@@ -3,7 +3,7 @@ import CopyText from './utils/copyText'
 
 import { shortenString } from 'utils'
 
-export const RowInfo = ({
+const RowInfo = ({
   title,
   value,
 }: {
@@ -27,3 +27,4 @@ export const RowInfo = ({
     </Row>
   )
 }
+export default RowInfo

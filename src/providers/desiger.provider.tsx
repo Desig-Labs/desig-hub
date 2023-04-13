@@ -3,28 +3,26 @@ import { Fragment, ReactNode, useCallback, useEffect } from 'react'
 import isEqual from 'react-fast-compare'
 import { create } from 'zustand'
 
-import { useProfile } from 'hooks/useProfile'
+import { Profile, useProfile } from 'hooks/useProfile'
 
 /**
  * Store
  */
 
 export type DesigerStore = {
-  pubKey?: string
-  username?: string
+  profile: Profile
   desig?: IUID
   loading: boolean
-  setProfile: (payload: { pubKey?: string; username?: string }) => void
+  setProfile: (payload: Profile) => void
   setLoading: (loading: boolean) => void
   setDesig: (desig: IUID) => void
 }
 
 export const useDesigerStore = create<DesigerStore>()((set) => ({
-  pubKey: undefined,
-  username: undefined,
+  profile: { username: '', uid: '', public_key: '' },
   desig: undefined,
   loading: true,
-  setProfile: ({ pubKey, username }) => set({ pubKey, username }),
+  setProfile: (profile) => set({ profile }),
   setLoading: (loading) => set({ loading }),
   setDesig: (desig: IUID) => set({ desig }),
 }))
@@ -67,20 +65,14 @@ export default function DesigerProvider({ children }: { children: ReactNode }) {
 
   const initDesiger = useCallback(
     async (provider: IUID) => {
-      const desiger: Partial<DesigerStore> = {
-        pubKey: undefined,
-        username: undefined,
-      }
       try {
         let publicKey = await provider.connect()
-        desiger.pubKey = utils.bytesToHex(publicKey)
-        const profile = await fetchProfile(desiger.pubKey)
-        desiger.username = profile?.username
+        const profile = await fetchProfile(utils.bytesToHex(publicKey))
+        setProfile(profile || { username: '', uid: '', public_key: '' })
       } catch (error) {
         console.error(error)
       } finally {
         setLoading(false)
-        return setProfile(desiger)
       }
     },
     [fetchProfile, setLoading, setProfile],

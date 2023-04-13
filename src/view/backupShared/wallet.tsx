@@ -1,26 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { Auth } from '@supabase/auth-ui-react'
 
 import { Button, Col, Row, Space } from 'antd'
-import { RowInfo } from 'components/rowInfo'
+import RowInfo from 'components/rowInfo'
 
 import { useProfile } from 'hooks/useProfile'
-import { useDesiger } from 'providers/desiger.provider'
+import { useDesigerStore } from 'providers/desiger.provider'
 
 const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
   const [loading, setLoading] = useState(false)
-  const { pubKey } = useDesiger()
-  const { fetchProfile, linkSocial } = useProfile()
+  const { user } = Auth.useUser()
+  const {
+    profile: { uid },
+  } = useDesigerStore()
+  const { linkSocial } = useProfile()
 
   const handleLinkWithSocial = async () => {
     try {
       setLoading(true)
-      // Tracking created profile
-      const profile = await fetchProfile()
-      if (profile) {
-        if (profile.public_key !== pubKey)
-          throw new Error(`Social wallet ${profile.public_key} not match! `)
-      }
       // Create new profile
       const data = await linkSocial()
       if (!!data) onSuccess()
@@ -31,12 +29,17 @@ const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
     }
   }
 
+  const linked = user?.id === uid
+
+  useEffect(() => {
+    if (linked) onSuccess()
+  }, [linked, onSuccess])
+
   return (
     <Row gutter={[24, 24]}>
       <Col span={24}>
         <Space direction="vertical" style={{ width: '100%' }}>
-          <RowInfo title="Public Key:" value={pubKey} />
-          {/* <RowInfo title="Shared Key:" value={sharedKey} /> */}
+          <RowInfo title="Linked UID" value={uid} />
         </Space>
       </Col>
       <Col span={24}>
@@ -45,8 +48,9 @@ const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
           type="primary"
           block
           loading={loading}
+          disabled={linked}
         >
-          Link to social
+          {linked ? 'Linked' : 'Link to social'}
         </Button>
       </Col>
     </Row>
