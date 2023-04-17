@@ -8,7 +8,7 @@ import { utils } from '@noble/ed25519'
 
 export const useInvoke = () => {
   const [loading, setLoading] = useState(false)
-  const { desig } = useDesiger()
+  const { desig, profile } = useDesiger()
 
   const call = useCallback(
     async (action: any, bodyData: Record<string, any>) => {
@@ -27,6 +27,7 @@ export const useInvoke = () => {
           encodeMessage(JSON.stringify(reqData)),
         )
 
+        console.log('pubkey', utils.bytesToHex(pubkey))
         const reqBody: RequestBodyAuth = {
           ...reqData,
           publicKey: utils.bytesToHex(pubkey),
@@ -50,7 +51,7 @@ export const useInvoke = () => {
         setLoading(false)
       }
     },
-    [desig],
+    [desig, profile.public_key],
   )
 
   return { call, loading }

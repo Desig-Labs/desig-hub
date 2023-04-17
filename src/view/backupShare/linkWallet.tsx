@@ -8,12 +8,10 @@ import RowInfo from 'components/rowInfo'
 import { useProfile } from 'hooks/useProfile'
 import { useDesigerStore } from 'providers/desiger.provider'
 
-const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
+const LinkWallet = ({ onSuccess }: { onSuccess: () => void }) => {
   const [loading, setLoading] = useState(false)
   const { user } = Auth.useUser()
-  const {
-    profile: { uid },
-  } = useDesigerStore()
+  const { profile, setProfile } = useDesigerStore()
   const { linkSocial } = useProfile()
 
   const handleLinkWithSocial = async () => {
@@ -21,7 +19,10 @@ const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
       setLoading(true)
       // Create new profile
       const data = await linkSocial()
-      if (!!data) onSuccess()
+      if (!!data) {
+        setProfile({ ...profile, uid: user?.id! })
+        onSuccess()
+      }
     } catch (error: any) {
       toast(error.message, { type: 'error' })
     } finally {
@@ -29,7 +30,7 @@ const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
     }
   }
 
-  const linked = user?.id === uid
+  const linked = user?.id === profile.uid
 
   useEffect(() => {
     if (linked) onSuccess()
@@ -39,7 +40,7 @@ const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
     <Row gutter={[24, 24]}>
       <Col span={24}>
         <Space direction="vertical" style={{ width: '100%' }}>
-          <RowInfo title="Linked UID" value={uid} />
+          <RowInfo title="Linked UID" value={profile.uid} />
         </Space>
       </Col>
       <Col span={24}>
@@ -57,4 +58,4 @@ const Wallet = ({ onSuccess }: { onSuccess: () => void }) => {
   )
 }
 
-export default Wallet
+export default LinkWallet

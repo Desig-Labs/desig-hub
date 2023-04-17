@@ -1,7 +1,6 @@
 import IonIcon from '@sentre/antd-ionicon'
 import { Avatar, Card, Col, Row, Space, Typography } from 'antd'
 import { useDesiger } from 'providers/desiger.provider'
-import SetupDesiger from './setupDesiger'
 
 const Desiger = () => {
   const {
@@ -9,7 +8,7 @@ const Desiger = () => {
     profile: { username },
   } = useDesiger()
 
-  if (!username) {
+  if (!username || loading) {
     return (
       <Card bodyStyle={{ padding: '8px 12px' }}>
         <Row gutter={[12, 12]}>
@@ -25,7 +24,6 @@ const Desiger = () => {
             </Typography.Link>
           </Col>
         </Row>
-        {!loading && <SetupDesiger />}
       </Card>
     )
   }

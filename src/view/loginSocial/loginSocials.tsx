@@ -26,7 +26,12 @@ const LoginSocials = () => {
     <Row>
       <Col span={24}>
         {user ? (
-          <Button onClick={() => supabase.auth.signOut()} block>
+          <Button
+            onClick={() =>
+              supabase.auth.signOut().then(() => window.location.reload())
+            }
+            block
+          >
             Logout
           </Button>
         ) : (

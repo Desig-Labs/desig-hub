@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
 
 import { Col, Row } from 'antd'
-import Socials from './socials'
+import Socials from '../loginSocial'
 import CardProcess from 'components/cardProcess'
-import Wallet from './wallet'
+import LinkWallet from './linkWallet'
 
 const STEPS = [
   {
@@ -12,9 +12,9 @@ const STEPS = [
     Component: Socials,
   },
   {
-    title: 'Wallet',
+    title: 'Link Wallet',
     description: 'Link social with your desig wallet',
-    Component: Wallet,
+    Component: LinkWallet,
   },
 ]
 

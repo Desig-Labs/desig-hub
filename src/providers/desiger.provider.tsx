@@ -33,24 +33,7 @@ export const useDesigerStore = create<DesigerStore>()((set) => ({
 
 export const useDesiger = () => {
   const desiger = useDesigerStore((desiger) => desiger, isEqual)
-
-  const getDeviceKey = useCallback(async () => {
-    // await DESIGER.signMessage('GET_DEVICE_SHARED')
-    console.log('DEVICE_SHARED')
-    return 'DEVICE_SHARED'
-  }, [])
-
-  const getSocialKey = useCallback(async () => {
-    if (!desiger.desig) throw new Error('Login fist')
-    const { cloudShare } = await desiger.desig.requestCloudShare()
-    return utils.bytesToHex(cloudShare)
-  }, [desiger.desig])
-
-  return {
-    ...desiger,
-    getDeviceKey,
-    getSocialKey,
-  }
+  return desiger
 }
 
 /**
@@ -68,7 +51,10 @@ export default function DesigerProvider({ children }: { children: ReactNode }) {
       try {
         let publicKey = await provider.connect()
         const profile = await fetchProfile(utils.bytesToHex(publicKey))
-        setProfile(profile || { username: '', uid: '', public_key: '' })
+
+        if (!profile)
+          return setProfile({ username: '', uid: '', public_key: '' })
+        setProfile({ ...profile, public_key: utils.bytesToHex(publicKey) })
       } catch (error) {
         console.error(error)
       } finally {

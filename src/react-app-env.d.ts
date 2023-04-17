@@ -10,7 +10,7 @@ interface IUID {
   authorize(
     message: Uint8Array,
   ): Promise<{ signature: Uint8Array; pubkey: Uint8Array }>
-  requestCloudShare(): Promise<{ cloudShare: Uint8Array }>
+  recovery(share: Uint8Array): Promise<{ pubkey: Uint8Array }>
 }
 
 interface Window {
