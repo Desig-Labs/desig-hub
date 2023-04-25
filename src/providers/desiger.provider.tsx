@@ -51,7 +51,7 @@ export default function DesigerProvider({ children }: { children: ReactNode }) {
       try {
         let publicKey = await provider.connect()
         const profile = await fetchProfile(utils.bytesToHex(publicKey))
-
+        console.log('profile', profile)
         if (!profile)
           return setProfile({ username: '', uid: '', public_key: '' })
         setProfile({ ...profile, public_key: utils.bytesToHex(publicKey) })

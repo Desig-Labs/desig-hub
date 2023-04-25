@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Auth } from '@supabase/auth-ui-react'
 
-import { Button, Col, Row, Space } from 'antd'
+import { Button, Col, Row, Space, Spin } from 'antd'
 import RowInfo from 'components/rowInfo'
 
 import { useProfile } from 'hooks/useProfile'
 import { useDesigerStore } from 'providers/desiger.provider'
 
 const LinkWallet = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const { user } = Auth.useUser()
   const { profile, setProfile } = useDesigerStore()
   const { linkSocial } = useProfile()
@@ -37,24 +37,26 @@ const LinkWallet = ({ onSuccess }: { onSuccess: () => void }) => {
   }, [linked, onSuccess])
 
   return (
-    <Row gutter={[24, 24]}>
-      <Col span={24}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <RowInfo title="Linked UID" value={profile.uid} />
-        </Space>
-      </Col>
-      <Col span={24}>
-        <Button
-          onClick={handleLinkWithSocial}
-          type="primary"
-          block
-          loading={loading}
-          disabled={linked}
-        >
-          {linked ? 'Linked' : 'Link to social'}
-        </Button>
-      </Col>
-    </Row>
+    <Spin>
+      <Row gutter={[24, 24]}>
+        <Col span={24}>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <RowInfo title="Linked UID" value={profile.uid} />
+          </Space>
+        </Col>
+        <Col span={24}>
+          <Button
+            onClick={handleLinkWithSocial}
+            type="primary"
+            block
+            loading={loading}
+            disabled={linked}
+          >
+            {linked ? 'Linked' : 'Link to social'}
+          </Button>
+        </Col>
+      </Row>
+    </Spin>
   )
 }
 

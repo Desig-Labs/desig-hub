@@ -33,8 +33,6 @@ const Banner = () => {
                 size="large"
                 type="primary"
                 icon={<IonIcon name="finger-print-outline" />}
-                href={twitter}
-                target="_blank"
                 onClick={() => navigate('/recovery')}
               >
                 Recovery
