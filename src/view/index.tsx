@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { Col, Row } from 'antd'
 import PageHeader from 'components/system/header'
-import Footer from 'components/system/footer'
+import Footer from 'components/footer'
 import Home from './home'
 
 function View() {
