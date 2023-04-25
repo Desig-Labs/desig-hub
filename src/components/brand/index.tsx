@@ -44,6 +44,7 @@ export default function Brand({
       height={size}
       style={style}
       onClick={onClick}
+      preview={false}
     />
   )
 }

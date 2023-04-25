@@ -8,7 +8,7 @@ import { utils } from '@noble/ed25519'
 
 export const useInvoke = () => {
   const [loading, setLoading] = useState(false)
-  const { desig, profile } = useDesiger()
+  const { desig } = useDesiger()
 
   const call = useCallback(
     async (action: any, bodyData: Record<string, any>) => {
@@ -51,7 +51,7 @@ export const useInvoke = () => {
         setLoading(false)
       }
     },
-    [desig, profile.public_key],
+    [desig],
   )
 
   return { call, loading }

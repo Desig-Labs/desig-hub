@@ -1,6 +1,6 @@
 import { Layout, Tabs } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
-import Banner from 'components/system/banner'
+import Banner from 'components/banner'
 import Backup from './backupShare'
 import Recovery from './recovery'
 
