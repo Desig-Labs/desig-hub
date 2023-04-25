@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Col, Row, Space, Typography, Button } from 'antd'
 import IonIcon from 'components/ionicon'
@@ -9,24 +9,12 @@ import { twitter } from 'configs/socials.constant'
 import styles from './index.module.scss'
 
 const Banner = () => {
+  const navigate = useNavigate()
+
   return (
     <Row gutter={[24, 128]}>
       <Col xs={24} md={12}>
         <Row gutter={[24, 24]}>
-          <Col span={24}>
-            <Space>
-              <Button size="large">Coming Soon 🚀</Button>
-              <Button
-                size="large"
-                type="primary"
-                icon={<IonIcon name="logo-twitter" />}
-                href={twitter}
-                target="_blank"
-              >
-                @DesigLabs
-              </Button>
-            </Space>
-          </Col>
           <Col span={24}>
             <Typography.Title style={{ fontSize: 112 }}>Desig</Typography.Title>
           </Col>
@@ -35,7 +23,25 @@ const Banner = () => {
               The blockchain-agnostic multisig solution.
             </Typography.Title>
           </Col>
-          <Col span={24} style={{ marginTop: 128 }}>
+          <Col span={24} style={{ marginTop: 96 }}>
+            <Space>
+              <Button size="large" onClick={() => navigate('/backup')}>
+                Backup Wallet 🚀
+              </Button>
+
+              <Button
+                size="large"
+                type="primary"
+                icon={<IonIcon name="finger-print-outline" />}
+                href={twitter}
+                target="_blank"
+                onClick={() => navigate('/recovery')}
+              >
+                Recovery
+              </Button>
+            </Space>
+          </Col>
+          <Col span={24} style={{ marginLeft: -32 }}>
             <Space>
               <Ripple />
               <Link
@@ -44,7 +50,7 @@ const Banner = () => {
                 // scroll={false}
               >
                 <Typography.Title level={5}>
-                  PREPARE FOR THE MOON 🌕
+                  DESIG WALLET MANAGEMENT 🌕
                 </Typography.Title>
               </Link>
             </Space>

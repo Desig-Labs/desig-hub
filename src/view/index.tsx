@@ -1,9 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-import { Col, Row } from 'antd'
+import { Col, Layout, Row } from 'antd'
 import PageHeader from 'components/header'
 import Footer from 'components/footer'
 import Home from './home'
+import Banner from 'components/banner'
+import Backup from './backupShare'
+import Recovery from './recovery'
+
+import { Content } from 'antd/es/layout/layout'
 
 function View() {
   return (
@@ -12,10 +17,17 @@ function View() {
         <PageHeader />
       </Col>
       <Col span={24}>
-        <Routes>
-          <Route path="home" element={<Home />} />
-          <Route path="*" element={<Navigate to="/home" />} />
-        </Routes>
+        <Layout>
+          <Banner />
+          <Content style={{ marginTop: 48 }}>
+            <Routes>
+              <Route path="home" element={<Home />} />
+              <Route path="backup" element={<Backup />} />
+              <Route path="recovery" element={<Recovery />} />
+              <Route path="*" element={<Navigate to="/home" />} />
+            </Routes>
+          </Content>
+        </Layout>
       </Col>
       <Col span={24}>
         <Footer />
